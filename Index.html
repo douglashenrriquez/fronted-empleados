@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Design by foolishdeveloper.com -->
+    <title>Glassmorphism login Form Tutorial in html css</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="CSS/login.css">
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form id="loginForm">
+        <h3>Login</h3>
+
+        <label for="username">Usuario</label>
+        <input type="text" placeholder="Usuario" id="username" required>
+
+        <label for="password">Contraseña</label>
+        <input type="password" placeholder="Contraseña" id="password" required>
+
+        <button type="submit">Iniciar</button>
+    </form>
+
+    <script>
+        // Obtener el formulario y los campos
+        const form = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();  // Prevenir el envío tradicional del formulario
+
+            // Obtener los valores de usuario y contraseña
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            // Enviar los datos al backend (API de Flask)
+            try {
+                const response = await fetch('http://127.0.0.1:5000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user: username,
+                        pass: password
+                    })
+                });
+
+                const data = await response.json();
+
+                // Si el login es exitoso, redirigir a otra página
+                if (response.ok) {
+                    window.location.href = 'principal.html';  // Redirigir a la página del dashboard
+                } else {
+                    alert(data.error || 'Ocurrió un error durante el login.');
+                }
+            } catch (error) {
+                console.error('Error al conectar con el servidor:', error);
+                alert('Error al conectar con el servidor.');
+            }
+        });
+
+
+        
+    </script>
+</body>
+</html>
