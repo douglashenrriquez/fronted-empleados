@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Departamentos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="CSS/estilo.css">
+  <!-- Enlace a DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <ul class="navbar__menu">
+      <li class="navbar__item">
+        <a href="home.html" class="navbar__link"><i data-feather="home"></i><span>Inicio</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="user-plus"></i><span>Agregar Empleado</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="list"></i><span>Lista de Empleado</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="Agregarpartamento.html" class="navbar__link"><i data-feather="plus-square"></i><span>Agregar Departamento</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="list"></i><span>Lista de Departamento</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="clipboard"></i><span>Agregar Supervisor</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="list"></i><span>Lista de Supervisor</span></a>        
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Contenedor principal -->
+  <div class="container">
+    <h1>Lista de los Departamentos de la Empresa</h1>
+    <!-- Tabla para DataTables -->
+    <table id="departamentosTable" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Los datos se llenarán dinámicamente -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Scripts -->
+  <script src='https://unpkg.com/feather-icons'></script>
+  <script>
+    // Activar los iconos de Feather
+    feather.replace();
+
+    // Inicializar DataTable y cargar datos desde la API
+    $(document).ready(function() {
+      $('#departamentosTable').DataTable({
+        ajax: {
+          url: 'http://127.0.0.1:5000/departamentos', // Ruta de la API
+          dataSrc: '' // Indica que los datos están en la raíz del JSON
+        },
+        columns: [
+          { data: 'idDepartamento' }, // Mapeo del campo 'idDepartamento'
+          { data: 'nombre' } // Mapeo del campo 'nombre'
+        ],
+        language: {
+          url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' // Traducción al español
+        }
+      });
+    });
+  </script>
+</body>
+</html>
