@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Agregar Departamento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="CSS/estilo.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <ul class="navbar__menu">
+      <li class="navbar__item">
+        <a href="home.html" class="navbar__link"><i data-feather="home"></i><span>Inicio</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="user-plus"></i><span>Agregar Empleado</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="list"></i><span>Lista de Empleado</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="plus-square"></i><span>Agregar Departamento</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="list"></i><span>Lista de Departamento</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="clipboard"></i><span>Agregar Supervisor</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="list"></i><span>Lista de Supervisor</span></a>        
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Contenedor principal -->
+  <div class="container">
+    <h1>Agregar Departamento de Empresa</h1>
+
+    <!-- Formulario en una tarjeta -->
+    <div class="formulario">
+      <form id="departamentoForm">
+        <div class="form-group">
+          <label for="nombre">Nombre del Departamento</label>
+          <input type="text" id="nombre" name="nombre" required placeholder="Ingresa el nombre del departamento">
+        </div>
+        <button type="submit" class="btn">Agregar Departamento</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2>Departamento agregado exitosamente</h2>
+      <button id="closeModal">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src='https://unpkg.com/feather-icons'></script>
+  <script  src="./script.js"></script>
+  <script>
+    // Activar los iconos de Feather
+    feather.replace();
+
+    // Obtener elementos del DOM
+    const form = document.getElementById('departamentoForm');
+    const nombreInput = document.getElementById('nombre');
+    const modal = document.getElementById('modal');
+    const closeModal = document.getElementById('closeModal');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault(); // Evitar envío tradicional del formulario
+
+      // Obtener el valor del nombre
+      const nombre = nombreInput.value;
+
+      // Enviar los datos al backend (API de Flask)
+      try {
+        const response = await fetch('http://127.0.0.1:5000/departamentos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            nombre: nombre // Datos que se envían al backend
+          })
+        });
+
+        const data = await response.json();
+
+        // Verificar la respuesta del servidor
+        if (response.ok) {
+          // Mostrar el modal en caso de éxito
+          modal.style.display = 'flex';
+          form.reset(); // Limpiar el formulario
+        } else {
+          alert(data.error || 'Ocurrió un error al agregar el departamento.');
+        }
+      } catch (error) {
+        console.error('Error al conectar con el servidor:', error);
+        alert('Error al conectar con el servidor.');
+      }
+    });
+
+    // Cerrar el modal
+    closeModal.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
