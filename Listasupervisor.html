@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Supervisores</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="CSS/estilo.css">
+  <!-- Enlace a DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+</head>
+
+<style>
+    
+    /* Estilos generales de la tabla */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+  
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+  
+    th {
+      background-color: #f4f4f4;
+    }
+  
+    /* Estilo de los botones */
+    .editar-btn, .eliminar-btn {
+      padding: 8px 15px;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+  
+    /* Botón de Editar */
+    .editar-btn {
+      background-color: #4CAF50; /* Verde */
+      color: white;
+    }
+  
+    .editar-btn:hover {
+      background-color: #45a049; /* Verde más oscuro */
+    }
+  
+    /* Botón de Eliminar */
+    .eliminar-btn {
+      background-color: #f44336; /* Rojo */
+      color: white;
+    }
+  
+    .eliminar-btn:hover {
+      background-color: #e53935; /* Rojo más oscuro */
+    }
+  
+    /* Estilo cuando el botón está deshabilitado */
+    .btn-disabled {
+      background-color: #d3d3d3;
+      color: #888;
+      cursor: not-allowed;
+    }
+  
+    /* Estilo para los botones al lado uno del otro */
+    .acciones-btns {
+      display: flex;
+      gap: 10px; /* Espacio entre los botones */
+    }
+  </style>
+  
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <ul class="navbar__menu">
+      <li class="navbar__item">
+        <a href="home.html" class="navbar__link"><i data-feather="home"></i><span>Inicio</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="user-plus"></i><span>Agregar Empleado</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="list"></i><span>Lista de Empleado</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="Agregarpartamento.html" class="navbar__link"><i data-feather="plus-square"></i><span>Agregar Departamento</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="list"></i><span>Lista de Departamento</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="clipboard"></i><span>Agregar Supervisor</span></a>        
+      </li>
+      <li class="navbar__item">
+        <a href="#" class="navbar__link"><i data-feather="list"></i><span>Lista de Supervisor</span></a>        
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Contenedor principal -->
+  <div class="container">
+    <h1>Lista de los Supervisores</h1>
+    <!-- Tabla para DataTables -->
+    <table id="supervisoresTable" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Foto</th>
+          <th>Nombre</th>
+          <th>Apellidos</th>
+          <th>Estado</th>
+          <th>Acciones</th> <!-- Nueva columna para las acciones -->
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Los datos se llenarán dinámicamente -->
+      </tbody>
+    </table>
+  </div>
+  
+<!-- Modal para editar supervisor -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+      <h2>Editar Supervisor</h2>
+      <form id="editForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required><br><br>
+
+        <label for="apellidos">Apellidos:</label>
+        <input type="text" id="apellidos" name="apellidos" required><br><br>
+
+        <label for="estado">Estado:</label>
+        <select id="estado" name="estado">
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select><br><br>
+
+        <label for="foto">Foto:</label>
+        <input type="file" id="foto" name="foto"><br><br>
+
+        <button type="submit">Guardar Cambios</button>
+      </form>
+      <button id="closeModal">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src='https://unpkg.com/feather-icons'></script>
+  <script  src="./script.js"></script>
+  <script>
+    // Activar los iconos de Feather
+feather.replace();
+
+$(document).ready(function() {
+  var selectedSupervisorId = null;
+
+  // Inicializar DataTable y cargar datos desde la API
+  $('#supervisoresTable').DataTable({
+    ajax: {
+      url: 'http://127.0.0.1:5000/supervisores', // Ruta de la API
+      dataSrc: '' // Indica que los datos están en la raíz del JSON
+    },
+    columns: [
+      { data: 'idSupervisor' },
+      {
+        data: 'foto',
+        render: function(data) {
+          return '<img src="' + data + '" alt="Foto" style="width: 50px; height: auto;">';
+        }
+      },
+      { data: 'nombre' },
+      { data: 'apellidos' },
+      { data: 'estado' },
+      {
+        data: null,
+        render: function(data, type, row) {
+          return `
+            <div class="acciones-btns">
+              <button class="editar-btn" data-id="${row.idSupervisor}">Editar</button>
+              <button class="eliminar-btn" data-id="${row.idSupervisor}">Eliminar</button>
+            </div>
+          `;
+        }
+      }
+    ],
+    language: {
+      url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+    }
+  });
+
+  // Cuando se hace clic en el botón "Editar"
+  $('#supervisoresTable').on('click', '.editar-btn', function() {
+    selectedSupervisorId = $(this).data('id');
+
+    // Aquí, puedes cargar los datos del supervisor en el formulario
+    var rowData = $('#supervisoresTable').DataTable().row($(this).closest('tr')).data();
+    
+    // Rellenar el formulario del modal con los datos del supervisor
+    $('#nombre').val(rowData.nombre);
+    $('#apellidos').val(rowData.apellidos);
+    $('#estado').val(rowData.estado);
+
+    // Abrir el modal
+    $('#modal').show();
+  });
+
+  // Cuando se hace clic en el botón "Cerrar" en el modal
+  $('#closeModal').on('click', function() {
+    $('#modal').hide();
+  });
+
+  // Manejo del formulario de edición
+  $('#editForm').on('submit', function(e) {
+  e.preventDefault();
+
+  // Crear un objeto FormData para enviar la imagen correctamente
+  var formData = new FormData();
+  formData.append('nombre', $('#nombre').val());
+  formData.append('apellidos', $('#apellidos').val());
+  formData.append('estado', $('#estado').val());
+  
+  // Si hay una nueva foto seleccionada, agregarla al FormData
+  var foto = $('#foto')[0].files[0];  // Asumiendo que #foto es el input de tipo file
+  if (foto) {
+    formData.append('foto', foto);
+  }
+
+  // Realizar la solicitud PUT para actualizar los datos
+  $.ajax({
+    url: 'http://127.0.0.1:5000/supervisores/' + selectedSupervisorId, // Asegúrate de agregar el ID en la URL
+    type: 'PUT', // Método PUT para actualizar
+    data: formData, // Enviar los datos con FormData (incluye foto si existe)
+    contentType: false, // No establecer el contentType, ya que es manejado por FormData
+    processData: false, // No procesar los datos, ya que FormData se encarga de todo
+    success: function(response) {
+      alert("Datos actualizados para el supervisor con ID: " + selectedSupervisorId);
+      $('#supervisoresTable').DataTable().ajax.reload(); // Recargar la tabla
+      $('#modal').hide(); // Cerrar el modal
+    },
+    error: function(xhr, status, error) {
+      alert("Error al actualizar el supervisor: " + xhr.responseText);
+    }
+  });
+});
+});
+  </script>
+</body>
+</html>
