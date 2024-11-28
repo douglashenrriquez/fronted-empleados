@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Supervisores</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="CSS/estilo.css">
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+</head>
+
+<body>
+
+<!-- Barra de navegación -->
+<nav class="navbar">
+  <ul class="navbar__menu">
+    <li class="navbar__item">
+      <a href="home.html" class="navbar__link"><i data-feather="home"></i><span>Inicio</span></a>
+    </li>
+    <li class="navbar__item">
+      <a href="#" class="navbar__link"><i data-feather="user-plus"></i><span>Agergar Empleado</span></a>        
+    </li>
+    <li class="navbar__item">
+      <a href="#" class="navbar__link"><i data-feather="list"></i><span>Lista de Empleado</span></a>        
+    </li>
+    <li class="navbar__item">
+      <a href="Agregarpartamento.html" class="navbar__link"><i data-feather="plus-square"></i><span>Agergar Departamento</span></a>        
+    </li>
+    <li class="navbar__item">
+      <a href="Listadepartamento.html" class="navbar__link"><i data-feather="list"></i><span>Lista de Departamento</span></a>        
+    </li>
+    <li class="navbar__item">
+      <a href="Agregarsupervisor.html" class="navbar__link"><i data-feather="clipboard"></i><span>Agergar Supervisor</span></a>        
+    </li>
+    <li class="navbar__item">
+      <a href="ListaSupervisores.html" class="navbar__link"><i data-feather="list"></i><span>Lista de Supervisor</span></a>        
+    </li>
+  </ul>
+</nav>
+
+<!-- Contenedor de la tabla -->
+<div class="container">
+  <h1>Lista de Supervisores</h1>
+
+  <!-- Tabla donde se mostrarán los supervisores -->
+  <table id="supervisoresTable" class="display">
+    <thead>
+      <tr>
+        <th>ID</th> <!-- Nueva columna para mostrar el ID -->
+        <th>Foto</th>
+        <th>Nombre</th>
+        <th>Apellidos</th>
+        <th>Estado</th>
+        <th>Más Opciones</th> <!-- Columna nueva para el botón -->
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Los datos de supervisores se cargarán aquí mediante JavaScript -->
+    </tbody>
+  </table>
+</div>
+
+<script src="https://unpkg.com/feather-icons"></script>
+<script src="./script.js"></script>
+
+<!-- Script para obtener los supervisores desde la API y mostrarlos en la tabla -->
+<script>
+    $(document).ready(function() {
+      // Inicializar DataTable
+      var table = $('#supervisoresTable').DataTable();
+
+      // Obtener supervisores desde la API
+      fetch('http://127.0.0.1:5000/supervisores')
+        .then(response => response.json())
+        .then(data => {
+          // Limpiar cualquier fila previa antes de agregar nuevas filas
+          table.clear();
+
+          // Agregar los supervisores a la tabla
+          data.forEach(supervisor => {
+            let fotoUrl = supervisor.foto; // ruta almacenada en la base de datos
+
+            // Verificar si la ruta es correcta y construir la URL completa para la imagen
+            if (fotoUrl) {
+              // Obtener solo el nombre del archivo
+              let fileName = fotoUrl.split('/').pop();
+              fotoUrl = `http://127.0.0.1:5000/uploads/${fileName}`;
+            } else {
+              fotoUrl = 'default_image.jpg'; // Imagen por defecto si no se encuentra la foto
+            }
+
+            // Asignar la clase correspondiente según el estado
+            let estadoClass = supervisor.estado === "activo" ? "estado-activo" : "estado-inactivo";
+
+            // Crear la fila con los datos y el botón de "Más Opciones"
+            let row = [
+              supervisor.idSupervisor, // Mostrar el ID del supervisor
+              `<img src="${fotoUrl}" alt="Foto del Supervisor" width="150" height="150">`, 
+              supervisor.nombre,
+              supervisor.apellidos,
+              `<span class="${estadoClass}">${supervisor.estado}</span>`, // Estado con clase dinámica
+              `<button class="btn-opciones">Más Opciones</button>` // Botón de opciones
+            ];
+
+            // Agregar la fila a la tabla
+            table.row.add(row).draw();
+          });
+
+          // Inicializar las funcionalidades de búsqueda y filtrado
+          table.search(''); // Esto reinicia la búsqueda si había un valor residual
+        })
+        .catch(error => {
+          console.error('Error al cargar los supervisores:', error);
+        });
+    });
+</script>
+
+</body>
+</html>

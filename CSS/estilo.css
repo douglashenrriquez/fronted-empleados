@@ -1394,3 +1394,66 @@ body {
 .modal-content button:focus {
   outline: none;
 }
+
+ /* Asegúrate de que las celdas de la tabla estén centradas */
+ table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: center; /* Centrar los textos y las fotos */
+  padding: 10px;
+  vertical-align: middle;
+}
+
+/* Estilo para las imágenes */
+td img {
+  width: 150px; /* Ajusta el tamaño de las imágenes */
+  height: 150px;
+  object-fit: cover; /* Hace que la imagen mantenga la proporción dentro del tamaño */
+  border-radius: 50%; /* Opción para hacer la foto circular, puedes quitarlo si prefieres cuadrada */
+}
+
+/* Estilo para las filas alternas (colores alternados en las filas) */
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.photo-preview {
+  margin-top: 20px;
+  display: none;
+  text-align: center;
+}
+
+.photo-preview img {
+  width: 200px; /* Ancho fijo */
+  height: 100px; /* Alto fijo */
+  object-fit: cover; /* Para que la imagen cubra todo el área sin deformarse */
+}
+
+/* Estilos adicionales para los botones y el estado */
+.btn-opciones {
+  background-color: #234acc; /* Verde por defecto */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.btn-opciones:hover {
+  background-color: #0b148d;
+}
+
+.estado-activo {
+  
+  color: green;
+  text-align: center;
+}
+
+.estado-inactivo {
+  
+  color: red;
+  text-align: center;
+}
+ 

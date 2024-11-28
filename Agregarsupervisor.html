@@ -59,6 +59,13 @@
           <label for="foto">Subir Foto</label>
           <input type="file" id="foto" name="foto" accept="image/*" required>
         </div>
+        
+        <!-- Contenedor para la vista previa de la foto -->
+        <div class="photo-preview" id="photoPreview">
+          <h3>Vista previa:</h3>
+          <img id="previewImg" src="" alt="Vista previa de la foto" />
+        </div>
+
         <button type="submit" class="btn">Agregar Supervisor</button>
       </form>
     </div>
@@ -72,51 +79,74 @@
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src='https://unpkg.com/feather-icons'></script>
-  <script  src="./script.js"></script>
+  <script src="./script.js"></script>
   <script>
-    // Activar los iconos de Feather
-    feather.replace();
+    document.addEventListener("DOMContentLoaded", function() {
+      const form = document.getElementById("supervisorForm");
+      const modal = document.getElementById("modal");
+      const closeModalButton = document.getElementById("closeModal");
+      const photoInput = document.getElementById("foto");
+      const photoPreview = document.getElementById("photoPreview");
+      const previewImg = document.getElementById("previewImg");
 
-    // Manejar el formulario para agregar supervisores
-    const form = document.getElementById('supervisorForm');
-    const modal = document.getElementById('modal');
-    const closeModal = document.getElementById('closeModal');
-
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      // Obtener valores del formulario
-      const nombre = document.getElementById('nombre').value;
-      const apellidos = document.getElementById('apellidos').value;
-      const estado = document.getElementById('estado').value;
-      const foto = document.getElementById('foto').value;
-
-      // Enviar datos al servidor
-      try {
-        const response = await fetch('http://127.0.0.1:5000/supervisores', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nombre, apellidos, estado, foto })
-        });
-
-        if (response.ok) {
-          // Mostrar mensaje de éxito
-          modal.style.display = 'flex';
-          form.reset(); // Limpiar el formulario
-        } else {
-          alert('Error al agregar el supervisor.');
-        }
-      } catch (error) {
-        console.error('Error al conectar con el servidor:', error);
-        alert('No se pudo conectar con el servidor.');
+      // Función para mostrar el modal de confirmación
+      function showModal() {
+        modal.style.display = "block";
       }
-    });
 
-    closeModal.addEventListener('click', () => {
-      modal.style.display = 'none';
+      // Función para ocultar el modal
+      function closeModal() {
+        modal.style.display = "none";
+      }
+
+      // Evento de cierre del modal
+      closeModalButton.addEventListener("click", closeModal);
+
+      // Evento de cambio en el campo de archivo (cuando se selecciona una imagen)
+      photoInput.addEventListener("change", function(event) {
+        const file = event.target.files[0]; // Obtener el archivo seleccionado
+        if (file) {
+          const reader = new FileReader();
+          
+          // Cuando la imagen se haya cargado, establecerla como la fuente de la vista previa
+          reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            photoPreview.style.display = "block"; // Mostrar la vista previa
+          };
+          
+          reader.readAsDataURL(file); // Leer la imagen como URL de datos (base64)
+        } else {
+          photoPreview.style.display = "none"; // Si no se selecciona ninguna imagen, ocultar la vista previa
+        }
+      });
+
+      // Evento de envío del formulario
+      form.addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
+
+        const formData = new FormData(form); // Recoger los datos del formulario, incluyendo la foto
+
+        // Enviar los datos al backend usando fetch
+        fetch("http://127.0.0.1:5000/supervisores", {
+          method: "POST",
+          body: formData,
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.message === "Supervisor creado con éxito") {
+              showModal(); // Mostrar el modal de éxito
+            } else {
+              alert("Error al agregar el supervisor: " + data.error); // Si hay un error
+            }
+          })
+          .catch(error => {
+            console.error("Error:", error);
+            alert("Hubo un error al conectar con la API.");
+          });
+      });
     });
   </script>
+
 </body>
 </html>
