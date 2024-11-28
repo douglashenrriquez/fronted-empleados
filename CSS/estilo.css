@@ -1117,10 +1117,10 @@ body {
   }
 }
  
-/*----------------------------------------------------------------------*/
+/*------------------------------ CONTAINER ----------------------------------------*/
 
 .container {
-  margin-left: 8rem; /* Para dar espacio a la barra lateral */
+  margin-left: 8rem; 
   margin-top: 2rem;
   padding: 2rem;
   background: #fff;
@@ -1130,8 +1130,9 @@ body {
   overflow-y: auto; /* Si el contenido es largo, agrega scroll */
  
 }
+/*----------------------------------------------------------------------------------*/
 
-/* Título principal del contenedor */
+/*------------------------------ HOME ----------------------------------------------*/
 .container h1 {
   font-size: 2rem;
   font-weight: 600;
@@ -1153,23 +1154,23 @@ body {
 }
 
 .container p {
-  font-size: 20px; /* Tamaño de fuente legible */
-  line-height: 1.6; /* Espaciado entre líneas para mejorar la lectura */
-  color: #333; /* Color de texto oscuro para mejor contraste */
-  margin-bottom: 1.5rem; /* Espacio debajo del párrafo para separación */
-  font-weight: 400; /* Peso de la fuente normal */
-  text-align: justify; /* Alineación justificada para una distribución uniforme del texto */
-  letter-spacing: 0.5px; /* Espaciado entre letras para mayor claridad */
-  max-width: 800px; /* Controla el ancho máximo del párrafo para evitar líneas demasiado largas */
-  margin-left: auto; /* Centra el párrafo en el contenedor */
-  margin-right: auto; /* Centra el párrafo en el contenedor */
+  font-size: 20px; 
+  line-height: 1.6; 
+  color: #333; 
+  margin-bottom: 1.5rem; 
+  font-weight: 400; 
+  text-align: justify; 
+  letter-spacing: 0.5px; 
+  max-width: 800px; 
+  margin-left: auto; 
+  margin-right: auto; 
 }
-/* Estilos para las tarjetas */
+
 .card-container {
   display: flex;
   justify-content: space-between;
-  gap: 2rem; /* Espacio entre las tarjetas */
-  margin-top: 2rem; /* Espacio superior para separar del contenido anterior */
+  gap: 2rem; 
+  margin-top: 2rem; 
 }
 
 .card {
@@ -1177,15 +1178,15 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 2rem;
-  width: 30%; /* Ocupa el 30% del ancho del contenedor */
+  width: 30%; 
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  margin-bottom: 2rem; /* Espacio debajo de las tarjetas */
+  margin-bottom: 2rem; 
 }
 
 .card:hover {
-  transform: translateY(-10px); /* Efecto de elevación */
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Sombra más fuerte */
+  transform: translateY(-10px); 
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); 
 }
 
 .card h3 {
@@ -1214,26 +1215,23 @@ body {
 .card button:hover {
   background-color: #315ec2;
 }
-
-
 /*-----------------------------------------------------------------------------------------------------*/
-/* Estilos para la tarjeta/formulario */
+
+/*--------------------------------------- FORMULARIO ----------------------------------------------------*/
 .formulario {
-  margin: 0 auto; /* Centrar horizontalmente */
+  margin: 0 auto; 
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   width: 100%;
   max-width: 500px;
-  position: absolute; /* Posicionamiento absoluto para centrar */
-  top: 50%; /* Centrado vertical */
-  left: 52%; /* Centrado horizontal */
-  transform: translate(-50%, -50%); /* Ajusta el formulario al centro exacto */
+  position: absolute; 
+  top: 50%; 
+  left: 52%; 
+  transform: translate(-50%, -50%); 
 }
 
-
-/* Grupo de los campos del formulario */
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -1295,22 +1293,22 @@ body {
 .btn:focus {
   outline: none;
 }
+/*------------------------------------------------------------------------------------------------------------------*/
 
-/* Estilos para la subventana (modal) */
+/*---------------------------------------- MODAL O SUBVENTANA -------------------------------------------------------*/
 .modal {
-  display: none; /* Ocultar el modal por defecto */
+  display: none; 
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+  background-color: rgba(0, 0, 0, 0.5); 
   justify-content: center;
   align-items: center;
   z-index: 1000;
 
 }
-
 
 .modal-content {
   background-color: #fff;
@@ -1320,7 +1318,7 @@ body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   max-width: 400px;
   width: 80%;
-  margin: 0 auto; /* Asegura que el contenido no se desborde */
+  margin: 0 auto; 
 }
 
 .modal-content h2 {
@@ -1370,7 +1368,7 @@ body {
 
 .modal-content input:focus,
 .modal-content select:focus {
-  border: 1px solid #406ff3; /* Resaltar campo con color */
+  border: 1px solid #406ff3; 
   outline: none;
 }
 
@@ -1394,47 +1392,34 @@ body {
 .modal-content button:focus {
   outline: none;
 }
+/*------------------------------------------------------------------------------------------------------------------*/
 
- /* Asegúrate de que las celdas de la tabla estén centradas */
+/*------------------------------------------- DISEÑO DE LA TABLA ---------------------------------------------------*/
+
  table {
   width: 100%;
   border-collapse: collapse;
 }
 
 th, td {
-  text-align: center; /* Centrar los textos y las fotos */
+  text-align: center; 
   padding: 10px;
   vertical-align: middle;
 }
 
-/* Estilo para las imágenes */
 td img {
-  width: 150px; /* Ajusta el tamaño de las imágenes */
+  width: 150px; 
   height: 150px;
-  object-fit: cover; /* Hace que la imagen mantenga la proporción dentro del tamaño */
-  border-radius: 50%; /* Opción para hacer la foto circular, puedes quitarlo si prefieres cuadrada */
+  object-fit: cover; 
+  border-radius: 50%;
 }
 
-/* Estilo para las filas alternas (colores alternados en las filas) */
 tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
-.photo-preview {
-  margin-top: 20px;
-  display: none;
-  text-align: center;
-}
-
-.photo-preview img {
-  width: 200px; /* Ancho fijo */
-  height: 100px; /* Alto fijo */
-  object-fit: cover; /* Para que la imagen cubra todo el área sin deformarse */
-}
-
-/* Estilos adicionales para los botones y el estado */
 .btn-opciones {
-  background-color: #234acc; /* Verde por defecto */
+  background-color: #234acc;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -1456,4 +1441,17 @@ tr:nth-child(even) {
   color: red;
   text-align: center;
 }
- 
+/*------------------------------------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------- PREVIEW ---------------------------------------------------------------*/
+.photo-preview {
+  margin-top: 20px;
+  display: none;
+  text-align: center;
+}
+
+.photo-preview img {
+  width: 200px; 
+  height: 100px;
+  object-fit: cover; 
+}
