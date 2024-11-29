@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agregar Empleado</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="CSS/estilo.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+  <style>
+    /* Estilo para centrar el formulario */
+    .form-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    form {
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      width: 400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+    }
+
+    form input, 
+    form select{
+      width: 90%;
+      padding: 8px;
+      margin: 10px 0;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+
+    form button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #45a049;
+    }
+
+    /* Estilo del modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+      padding-top: 60px;
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Menu de navegación -->
+  <nav class="navbar">
+    <ul class="navbar__menu">
+      <li class="navbar__item">
+        <a href="home.html" class="navbar__link"><i data-feather="home"></i><span>Inicio</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="agregar_empleado.html" class="navbar__link"><i data-feather="user-plus"></i><span>Agregar
+            Empleado</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="tabla_empleados.html" class="navbar__link"><i data-feather="list"></i><span>Lista de
+            Empleado</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="Agregarpartamento.html" class="navbar__link"><i data-feather="plus-square"></i><span>Agregar
+            Departamento</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="Listadepartamento.html" class="navbar__link"><i data-feather="list"></i><span>Lista de
+            Departamento</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="Agregarsupervisor.html" class="navbar__link"><i data-feather="clipboard"></i><span>Agregar
+            Supervisor</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="ListaSupervisores.html" class="navbar__link"><i data-feather="list"></i><span>Lista de
+            Supervisor</span></a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h1>Agregar Empleado</h1>
+    <div class="form-container">
+      <form id="formAgregarEmpleado" enctype="multipart/form-data">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required><br><br>
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" name="apellido" required><br><br>
+        <label for="fecha_nac">Fecha de Nacimiento:</label>
+        <input type="date" id="fecha_nac" name="fecha_nac" required><br><br>
+        <label for="ciudad">Ciudad:</label>
+        <input type="text" id="ciudad" name="ciudad" required><br><br>
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion" required><br><br>
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" name="telefono" required><br><br>
+        <label for="idDepartamento">Departamento:</label>
+        <select id="idDepartamento" name="idDepartamento" required>
+        </select><br><br>
+        <label for="idSupervisor">Supervisor:</label>
+        <select id="idSupervisor" name="idSupervisor" required>
+        </select><br><br>
+        <label for="salario">Salario:</label>
+        <input type="number" id="salario" name="salario" required><br><br>
+        <label for="foto">Foto:</label>
+        <input type="file" id="foto" name="foto" accept="image/*" onchange="previewImage(event)">
+        <img id="fotoPreview" src="" alt="Vista previa de la foto" style="display:none;">
+        <button type="submit">Agregar Empleado</button>
+      </form>
+    </div>
+
+    <div class="modal" id="modalSuccess">
+      <div class="modal-content">
+        <h2>Empleado agregado exitosamente</h2>
+        <button id="closeModal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://127.0.0.1:5000/empleados';
+    const modalSuccess = document.getElementById('modalSuccess');
+    const closeModal = document.getElementById('closeModal');
+
+    const API_DEPARTAMENTOS = 'http://127.0.0.1:5000/departamentos';
+    const API_SUPERVISORES = 'http://127.0.0.1:5000/supervisores';
+
+    async function cargarOpciones(endpoint, selectId) {
+      try {
+        const response = await fetch(endpoint);
+        if (!response.ok) throw new Error('Error al obtener datos');
+        const data = await response.json();
+
+        const select = document.getElementById(selectId);
+        select.innerHTML = data
+          .map(item => `<option value="${item.id}">${item.nombre}</option>`)
+          .join('');
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+
+    cargarOpciones(API_DEPARTAMENTOS, 'idDepartamento');
+    cargarOpciones(API_SUPERVISORES, 'idSupervisor');
+
+
+    function previewImage(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function () {
+        const preview = document.getElementById('fotoPreview');
+        preview.src = reader.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    document.getElementById('formAgregarEmpleado').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+
+      // Asegurarse de que la foto sea parte del formulario
+      const fotoInput = document.getElementById('foto').files[0];
+      if (fotoInput) {
+        formData.set('foto', fotoInput); // Enviar el archivo directamente
+      }
+
+      await sendData(formData);
+    });
+
+    async function sendData(formData) {
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          modalSuccess.style.display = 'flex'; // Solo mostrar el modal
+          document.getElementById('formAgregarEmpleado').reset();
+          const fotoPreview = document.getElementById('fotoPreview');
+          fotoPreview.src = '';  // Borrar la imagen de vista previa
+          fotoPreview.style.display = 'none';
+        } else {
+          const error = await response.json();
+          alert(error.error || 'Error al agregar empleado');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Ocurrió un error al enviar los datos.');
+      }
+    }
+
+    closeModal.addEventListener('click', () => {
+      modalSuccess.style.display = 'none';
+    });
+  </script>
+  <script src='https://unpkg.com/feather-icons'></script>
+  <script src="./script.js"></script>
+</body>
+
+</html>
