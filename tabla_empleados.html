@@ -7,119 +7,13 @@
   <title>Lista de Empleados</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
   <link rel="stylesheet" href="CSS/estilo.css">
+  <link rel="stylesheet" href="CSS/tablaEmpleado.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 
-  <style>
-    /* Estilos generales de la tabla */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    /* Centra el contenedor de la tabla y mantiene el estilo */
-    .tabla-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      margin-top: 20px;
-    }
-
-    .dataTables_wrapper {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .dataTables_filter {
-      margin-left: auto;
-      margin-top: 10px;
-      text-align: right;
-    }
-
-    .dataTables_length,
-    .dataTables_info {
-      padding-right: 10px;
-    }
-
-    th,
-    td {
-      padding: 10px;
-      text-align: left;
-      border: 1px solid #ddd;
-      vertical-align: middle;
-    }
-
-    th {
-      background-color: #f4f4f4;
-    }
-
-    .editar-btn,
-    .eliminar-btn {
-      padding: 10px 20px;
-      font-size: 14px;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: all 0.3s ease;
-    }
-
-    .editar-btn {
-      background-color: #4CAF50;
-      color: white;
-    }
-
-    .editar-btn:hover {
-      background-color: #45a049;
-    }
-
-    .eliminar-btn {
-      background-color: #f44336;
-      color: white;
-    }
-
-    .eliminar-btn:hover {
-      background-color: #e53935;
-    }
-
-    .btn-disabled {
-      background-color: #d3d3d3;
-      color: #888;
-      cursor: not-allowed;
-    }
-
-    .acciones-btns {
-      display: flex;
-      gap: 10px;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .tabla-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-    }
-
-    td:last-child {
-      width: 150px;
-      text-align: center;
-    }
-
-    td img {
-      width: 50px;
-      height: 50px;
-      object-fit: cover;
-      border-radius: 50%;
-      display: block;
-      margin: 0 auto;
-    }
-  </style>
+ 
 
 </head>
 
@@ -160,67 +54,73 @@
   <div class="container">
     <h1>Lista de Empleados</h1>
 
-    <div class="tabla-container">
-      <table id="empleadosTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Foto</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Fecha de Nacimiento</th>
-            <th>Ciudad</th>
-            <th>Dirección</th>
-            <th>Teléfono</th>
-            <th>Departamento</th>
-            <th>Supervisor</th>
-            <th>Salario</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="tablaEmpleados">
-          <!-- Datos cargados por JavaScript -->
-        </tbody>
-      </table>
-    </div>
+    <table id="empleadosTable" class="display">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Foto</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Fecha de Nacimiento</th>
+          <th>Ciudad</th>
+          <th>Dirección</th>
+          <th>Teléfono</th>
+          <th>Departamento</th>
+          <th>Supervisor</th>
+          <th>Salario</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tablaEmpleados">
+        <!-- Las filas se insertarán aquí dinámicamente -->
+      </tbody>
+    </table> 
   </div>
+  <script src='https://unpkg.com/feather-icons'></script>
+  <script src="./script.js"></script>
 
   <script>
     const API_URL = 'http://127.0.0.1:5000/empleados';
-
+  
+    // Función para cargar los empleados
     async function cargarEmpleados() {
       try {
         const response = await fetch(API_URL);
         const empleados = await response.json();
-
+  
         const tabla = document.getElementById('tablaEmpleados');
-        tabla.innerHTML = '';
-
+        tabla.innerHTML = ''; // Limpiar la tabla antes de agregar nuevos datos
+  
         empleados.forEach((empleado) => {
           let foto = empleado.foto ? empleado.foto.replace(/\\/g, '/') : '';
           const row = `
-    <tr>
-      <td>${empleado.idEmpleados}</td>
-      <td><img src="http://127.0.0.1:5000/${foto}" alt="Foto" width="50"></td>
-      <td>${empleado.nombre}</td>
-      <td>${empleado.apellido}</td>
-      <td>${empleado.fecha_nac}</td>
-      <td>${empleado.ciudad}</td>
-      <td>${empleado.direccion}</td>
-      <td>${empleado.telefono}</td>
-      <td>${empleado.departamento || ''}</td>
-      <td>${empleado.supervisor || ''}</td>
-      <td>${empleado.salario}</td>
-      <td class="acciones-btns">
-        <button class="editar-btn">Editar</button>
-        <button class="eliminar-btn" onclick="eliminarEmpleado(${empleado.idEmpleados})">Eliminar</button>
-      </td>
-    </tr>
-  `;
+            <tr>
+              <td>${empleado.idEmpleados}</td>
+              <td><img src="http://127.0.0.1:5000/${foto}" alt="Foto" width="50"></td>
+              <td>${empleado.nombre}</td>
+              <td>${empleado.apellido}</td>
+              <td>${empleado.fecha_nac}</td>
+              <td>${empleado.ciudad}</td>
+              <td>${empleado.direccion}</td>
+              <td>${empleado.telefono}</td>
+              <td>${empleado.departamento || ''}</td>
+              <td>${empleado.supervisor || ''}</td>
+              <td>${empleado.salario}</td>
+              <td class="acciones-btns">
+                <button class="editar-btn">Editar</button>
+                <button class="eliminar-btn" onclick="eliminarEmpleado(${empleado.idEmpleados})">Eliminar</button>
+              </td>
+            </tr>
+          `;
           tabla.innerHTML += row;
         });
-
-
+  
+        // Destruir la instancia anterior de DataTable (si existe) antes de inicializar una nueva
+        if ($.fn.dataTable.isDataTable('#empleadosTable')) {
+          $('#empleadosTable').DataTable().clear().destroy();
+        }
+  
+        // Inicializar DataTable
         $('#empleadosTable').DataTable({
           "paging": true,
           "searching": true,
@@ -234,35 +134,32 @@
         alert('Error al cargar empleados');
       }
     }
-
+  
+    // Función para eliminar un empleado
     async function eliminarEmpleado(idEmpleados) {
-    const confirmacion = confirm('¿Estás seguro de que deseas eliminar este empleado?');
-    if (confirmacion) {
-      try {
-        const response = await fetch(`${API_URL}/${idEmpleados}`, {
-          method: 'DELETE',
-        });
-
-        if (response.ok) {
-          alert('Empleado eliminado con éxito');
-          cargarEmpleados();  // Recargar la lista de empleados
-        } else {
-          const errorData = await response.json();
-          alert(errorData.error || 'Error al eliminar el empleado');
+      const confirmacion = confirm('¿Estás seguro de que deseas eliminar este empleado?');
+      if (confirmacion) {
+        try {
+          const response = await fetch(`${API_URL}/${idEmpleados}`, {
+            method: 'DELETE',
+          });
+  
+          if (response.ok) {
+            alert('Empleado eliminado con éxito');
+            cargarEmpleados();  // Recargar la lista de empleados
+          } else {
+            const errorData = await response.json();
+            alert(errorData.error || 'Error al eliminar el empleado');
+          }
+        } catch (error) {
+          alert('Error al eliminar el empleado');
         }
-      } catch (error) {
-        alert('Error al eliminar el empleado');
       }
     }
-  }
-
-
+  
+    // Ejecutar al cargar la página
     window.onload = cargarEmpleados;
   </script>
-
-
-  <script src='https://unpkg.com/feather-icons'></script>
-  <script src="./script.js"></script>
+  
 </body>
-
 </html>

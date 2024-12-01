@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Supervisor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="CSS/estilo.css">
+</head>
+<body>
+ 
+<!-- Barra de navegación -->
+<nav class="navbar">
+    <ul class="navbar__menu">
+      <li class="navbar__item">
+        <a href="home.html" class="navbar__link"><i data-feather="home"></i><span>Inicio</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="agregar_empleado.html" class="navbar__link"><i data-feather="user-plus"></i><span>Agregar Empleado</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="tabla_empleados.html" class="navbar__link"><i data-feather="list"></i><span>Lista de Empleado</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="Agregarpartamento.html" class="navbar__link"><i data-feather="plus-square"></i><span>Agregar Departamento</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="Listadepartamento.html" class="navbar__link"><i data-feather="list"></i><span>Lista de Departamento</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="Agregarsupervisor.html" class="navbar__link"><i data-feather="clipboard"></i><span>Agregar Supervisor</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="ListaSupervisores.html" class="navbar__link"><i data-feather="list"></i><span>Lista de Supervisor</span></a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h1>Editar Departamento</h1>
+    <div class="formulario">
+      <form id="departamentoForm">
+        <div class="form-group">
+          <label for="nombre">Nombre del Departamento</label>
+          <input type="text" id="nombre" name="nombre" required placeholder="Ingresa el nombre del departamento">
+        </div>
+        <button type="button" id="editarBtn" class="btn">Editar</button>
+
+        <div id="separador">
+
+        </div>
+        <button type="button" id="Eliminar" class="btn">Eliminar</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2>Operación exitosa</h2>
+      <button id="closeModal">Cerrar</button>
+    </div>
+  </div>
+
+  <script src='https://unpkg.com/feather-icons'></script>
+  <script src="./script.js"></script>
+  <script>
+    feather.replace();
+
+    // Obtener el ID del departamento de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const idDepartamento = urlParams.get('id');
+
+    // Obtener los elementos del DOM
+    const nombreInput = document.getElementById('nombre');
+    const editarBtn = document.getElementById('editarBtn');
+    const eliminarBtn = document.getElementById('Eliminar');
+    const modal = document.getElementById('modal');
+    const closeModal = document.getElementById('closeModal');
+
+    // Cargar los datos del departamento
+    async function cargarDepartamento() {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/departamentos/${idDepartamento}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          nombreInput.value = data.nombre; // Rellenar el formulario con los datos del departamento
+        } else {
+          alert(data.error || 'No se encontró el departamento');
+        }
+      } catch (error) {
+        console.error('Error al conectar con el servidor:', error);
+        alert('Error al conectar con el servidor');
+      }
+    }
+
+    cargarDepartamento();
+
+        // Función para editar el departamento
+    editarBtn.addEventListener('click', async () => {
+  const nombre = nombreInput.value;
+
+  try {
+    const response = await fetch(`http://127.0.0.1:5000/departamentos/${idDepartamento}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Mostrar mensaje de éxito en el modal
+      modal.style.display = 'flex';
+      modal.querySelector('.modal-content').textContent = 'Departamento editado con éxito';
+
+      // Redirigir inmediatamente
+      window.location.href = 'Listadepartamento.html';
+    } else {
+      alert(data.error || 'Error al editar el departamento');
+    }
+  } catch (error) {
+    console.error('Error al conectar con el servidor:', error);
+    alert('Error al conectar con el servidor');
+  }
+});
+
+    // Función para eliminar el departamento
+    eliminarBtn.addEventListener('click', async () => {
+      const confirmDelete = confirm('¿Estás seguro de que deseas eliminar este departamento?');
+
+      if (confirmDelete) {
+        try {
+          const response = await fetch(`http://127.0.0.1:5000/departamentos/${idDepartamento}`, {
+            method: 'DELETE'
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert('Departamento eliminado con éxito');
+            window.location.href = 'Listadepartamento.html'; 
+          } else {
+            alert(data.error || 'Error al eliminar el departamento');
+          }
+        } catch (error) {
+          console.error('Error al conectar con el servidor:', error);
+          alert('Error al conectar con el servidor');
+        }
+      }
+    });
+
+    closeModal.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

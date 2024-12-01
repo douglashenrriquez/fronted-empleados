@@ -6,73 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
   <link rel="stylesheet" href="CSS/estilo.css">
-  <!-- Enlace a DataTables -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 </head>
-<style>
-  /* Estilos generales de la tabla */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
 
-  th, td {
-    padding: 10px;
-    text-align: left;
-    border: 1px solid #ddd;
-  }
-
-  th {
-    background-color: #f4f4f4;
-  }
-
-  /* Estilo de los botones */
-  .editar-btn, .eliminar-btn {
-    padding: 8px 15px;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-  }
-
-  /* Botón de Editar */
-  .editar-btn {
-    background-color: #4CAF50; /* Verde */
-    color: white;
-  }
-
-  .editar-btn:hover {
-    background-color: #45a049; /* Verde más oscuro */
-  }
-
-  /* Botón de Eliminar */
-  .eliminar-btn {
-    background-color: #f44336; /* Rojo */
-    color: white;
-  }
-
-  .eliminar-btn:hover {
-    background-color: #e53935; /* Rojo más oscuro */
-  }
-
-  /* Estilo cuando el botón está deshabilitado */
-  .btn-disabled {
-    background-color: #d3d3d3;
-    color: #888;
-    cursor: not-allowed;
-  }
-
-  /* Estilo para los botones al lado uno del otro */
-  .acciones-btns {
-    display: flex;
-    gap: 10px; /* Espacio entre los botones */
-  }
-</style>
 <body>
   <!-- Navbar -->
   <nav class="navbar">
@@ -81,28 +20,22 @@
         <a href="home.html" class="navbar__link"><i data-feather="home"></i><span>Inicio</span></a>
       </li>
       <li class="navbar__item">
-        <a href="agregar_empleado.html" class="navbar__link"><i data-feather="user-plus"></i><span>Agregar
-            Empleado</span></a>
+        <a href="agregar_empleado.html" class="navbar__link"><i data-feather="user-plus"></i><span>Agregar Empleado</span></a>
       </li>
       <li class="navbar__item">
-        <a href="tabla_empleados.html" class="navbar__link"><i data-feather="list"></i><span>Lista de
-            Empleado</span></a>
+        <a href="tabla_empleados.html" class="navbar__link"><i data-feather="list"></i><span>Lista de Empleado</span></a>
       </li>
       <li class="navbar__item">
-        <a href="Agregarpartamento.html" class="navbar__link"><i data-feather="plus-square"></i><span>Agregar
-            Departamento</span></a>
+        <a href="Agregarpartamento.html" class="navbar__link"><i data-feather="plus-square"></i><span>Agregar Departamento</span></a>
       </li>
       <li class="navbar__item">
-        <a href="Listadepartamento.html" class="navbar__link"><i data-feather="list"></i><span>Lista de
-            Departamento</span></a>
+        <a href="Listadepartamento.html" class="navbar__link"><i data-feather="list"></i><span>Lista de Departamento</span></a>
       </li>
       <li class="navbar__item">
-        <a href="Agregarsupervisor.html" class="navbar__link"><i data-feather="clipboard"></i><span>Agregar
-            Supervisor</span></a>
+        <a href="Agregarsupervisor.html" class="navbar__link"><i data-feather="clipboard"></i><span>Agregar Supervisor</span></a>
       </li>
       <li class="navbar__item">
-        <a href="ListaSupervisores.html" class="navbar__link"><i data-feather="list"></i><span>Lista de
-            Supervisor</span></a>
+        <a href="ListaSupervisores.html" class="navbar__link"><i data-feather="list"></i><span>Lista de Supervisor</span></a>
       </li>
     </ul>
   </nav>
@@ -116,6 +49,7 @@
         <tr>
           <th>ID</th>
           <th>Nombre</th>
+          <th>Más Opciones</th> <!-- Nueva columna para las opciones -->
         </tr>
       </thead>
       <tbody>
@@ -126,6 +60,7 @@
 
   <!-- Scripts -->
   <script src='https://unpkg.com/feather-icons'></script>
+  <script  src="./script.js"></script>
   <script>
     // Activar los iconos de Feather
     feather.replace();
@@ -139,7 +74,18 @@
         },
         columns: [
           { data: 'idDepartamento' }, // Mapeo del campo 'idDepartamento'
-          { data: 'nombre' } // Mapeo del campo 'nombre'
+          { data: 'nombre' }, // Mapeo del campo 'nombre'
+          {
+            data: 'idDepartamento',
+            render: function(data, type, row) {
+              // Crear el botón de opciones que redirige a la página de edición
+              return `
+                <button class="btn-opciones" onclick="window.location.href='EditarDepartamento.html?id=${data}'">
+                <span>OPCIONES</span><i data-feather="settings"></i>
+                </button>
+              `;
+            }
+          }
         ],
         language: {
           url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' // Traducción al español

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Supervisor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="CSS/estilo.css">
+</head>
+<body>
+ 
+<!-- Barra de navegación -->
+<nav class="navbar">
+    <ul class="navbar__menu">
+      <li class="navbar__item">
+        <a href="home.html" class="navbar__link"><i data-feather="home"></i><span>Inicio</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="agregar_empleado.html" class="navbar__link"><i data-feather="user-plus"></i><span>Agregar Empleado</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="tabla_empleados.html" class="navbar__link"><i data-feather="list"></i><span>Lista de Empleado</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="Agregarpartamento.html" class="navbar__link"><i data-feather="plus-square"></i><span>Agregar Departamento</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="Listadepartamento.html" class="navbar__link"><i data-feather="list"></i><span>Lista de Departamento</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="Agregarsupervisor.html" class="navbar__link"><i data-feather="clipboard"></i><span>Agregar Supervisor</span></a>
+      </li>
+      <li class="navbar__item">
+        <a href="ListaSupervisores.html" class="navbar__link"><i data-feather="list"></i><span>Lista de Supervisor</span></a>
+      </li>
+    </ul>
+  </nav>
+  
+
+  <div class="container">
+    <h1>Editar Supervisor</h1>
+    
+    <div id="separador">
+
+    </div>
+    <!-- Formulario -->
+    <div class="formulario">
+      <form id="supervisorForm">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" required placeholder="Ingresa el nombre del supervisor">
+        </div>
+        <div class="form-group">
+          <label for="apellidos">Apellidos</label>
+          <input type="text" id="apellidos" name="apellidos" required placeholder="Ingresa los apellidos del supervisor">
+        </div>
+        <div class="form-group">
+          <label for="estado">Estado</label>
+          <select id="estado" name="estado" required>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Guardar Cambios</button>
+        <div id="separador">
+
+        </div>
+        <button type="button" id="Eliminar" class="btn">Eliminar</button>
+      </form>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <h2>Supervisor actualizado exitosamente</h2>
+        <button id="closeModal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="./script.js"></script>
+  <script>
+    // Obtener el parámetro 'id' de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const idSupervisor = urlParams.get('id');
+  
+    if (idSupervisor) {
+      // Solicitar datos del supervisor
+      fetch(`http://127.0.0.1:5000/supervisores/${idSupervisor}`)
+        .then(response => response.json())
+        .then(supervisor => {
+          document.getElementById('nombre').value = supervisor.nombre;
+          document.getElementById('apellidos').value = supervisor.apellidos;
+          document.getElementById('estado').value = supervisor.estado;
+        })
+        .catch(error => {
+          console.error('Error al cargar los datos del supervisor:', error);
+          alert('Error al cargar los datos del supervisor');
+        });
+    } else {
+      alert('ID de supervisor no proporcionado');
+    }
+  
+    // Editar supervisor
+    document.getElementById('supervisorForm').addEventListener('submit', function (event) {
+      event.preventDefault(); // Evitar el envío normal del formulario
+
+      const nombre = document.getElementById('nombre').value;
+      const apellidos = document.getElementById('apellidos').value;
+      const estado = document.getElementById('estado').value;
+
+      fetch(`http://127.0.0.1:5000/supervisores/${idSupervisor}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, apellidos, estado })
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Supervisor actualizado exitosamente');
+          window.location.href = 'ListaSupervisores.html';
+        } else {
+          alert('Error al actualizar el supervisor');
+        }
+      })
+      .catch(error => {
+        console.error('Error al actualizar el supervisor:', error);
+        alert('Error al actualizar el supervisor');
+      });
+    });
+  
+    // Eliminar supervisor
+    document.getElementById('Eliminar').addEventListener('click', function () {
+      if (confirm('¿Estás seguro de que deseas eliminar este supervisor?')) {
+        fetch(`http://127.0.0.1:5000/supervisores/${idSupervisor}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (response.ok) {
+            alert('Supervisor eliminado exitosamente');
+            window.location.href = 'ListaSupervisores.html';
+          } else {
+            alert('Error al eliminar el supervisor');
+          }
+        })
+        .catch(error => {
+          console.error('Error al eliminar el supervisor:', error);
+          alert('Error al eliminar el supervisor');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
